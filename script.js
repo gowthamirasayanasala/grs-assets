@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Path to the folder containing images
-  const imagePath = "images/"; //"path/to/your/images/"
+  const imagePath = "https://gowthamirasayanasala.github.io/grs-assets/images/"; //"path/to/your/images/"
   // Reference to the container element
 
   const container = document.getElementById("image-container");
