@@ -63,7 +63,11 @@ function renderImages(container, images) {
     btnCpy.addEventListener("click", function ($event) {
       // Use the modern Clipboard API
       navigator.clipboard
-        .writeText(image)
+        .writeText(
+          `https://gowthamirasayanasala.github.io/grs-assets/images/${
+            image.toString().split("/")[image.toString().split("/").length - 1]
+          }`
+        )
         .then(() => {
           // Success
         })
@@ -82,7 +86,9 @@ function renderImages(container, images) {
     btnQr.addEventListener("click", function ($event) {
       // Create a QR code
       const qr = new QRious({
-        value: image,
+        value: `https://gowthamirasayanasala.github.io/grs-assets/images/${
+          image.toString().split("/")[image.toString().split("/").length - 1]
+        }`,
         size: 500,
       });
 
