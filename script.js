@@ -90,6 +90,7 @@ function renderImages(container, images) {
           image.toString().split("/")[image.toString().split("/").length - 1]
         }`,
         size: 500,
+        level: 'H',
       });
 
       // Create a canvas element to draw the QR code
