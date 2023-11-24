@@ -2,6 +2,8 @@ node app.js
 
 try {
 
+    git pull
+
     # Stage all changes
     git add .
 
