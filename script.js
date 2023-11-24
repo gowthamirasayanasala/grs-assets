@@ -53,6 +53,7 @@ function renderImages(container, images, basePath) {
     const docDiv = document.createElement("div");
     docDiv.classList.add("docDiv");
     docDiv.id = `p-${index}`;
+    dockDiv.innerText = image.split(".")[0]
 
     // btn div
     const btnDiv = document.createElement("div");
