@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Path to the folder containing images
   const basePath = `https://gowthamirasayanasala.github.io/grs-assets`;
-  // Reference to the container element
 
   const container = document.getElementById("image-container");
 
@@ -52,7 +51,7 @@ function renderImages(container, images, basePath) {
     // dock div
     const docDiv = document.createElement("div");
     docDiv.classList.add("docDiv");
-    docDiv.id = `p-${index}`;
+    docDiv.id = `dd-${index}`;
     docDiv.innerText = image.split(".")[0]
 
     // btn div
