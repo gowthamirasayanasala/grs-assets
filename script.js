@@ -1,13 +1,26 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Path to the folder containing images
-  const imagePath = "./images/"; //"path/to/your/images/"
+  const imagePath = "images/"; //"path/to/your/images/"
   // Reference to the container element
 
   const container = document.getElementById("image-container");
   // Fetch images
 
+  fetch("https://gowthamirasayanasala.github.io/grs-assets/images/assets-names.json", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      const movies = JSON.stringify(response.json());
+      console.log(movies,response.json(), "ee");
+      // renderImages(container, images);
+    })
+    .catch((error) => console.error("Error fetching images: ee", error));
+
   fetchImages(imagePath)
     .then((images) => {
+      console.log(images);
       renderImages(container, images);
     })
     .catch((error) => console.error("Error fetching images:", error));
@@ -90,7 +103,7 @@ function renderImages(container, images) {
           image.toString().split("/")[image.toString().split("/").length - 1]
         }`,
         size: 500,
-        level: 'H',
+        level: "H",
       });
 
       // Create a canvas element to draw the QR code
