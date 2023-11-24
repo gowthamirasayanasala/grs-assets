@@ -53,7 +53,7 @@ function renderImages(container, images, basePath) {
     const docDiv = document.createElement("div");
     docDiv.classList.add("docDiv");
     docDiv.id = `p-${index}`;
-    dockDiv.innerText = image.split(".")[0]
+    docDiv.innerText = image.split(".")[0]
 
     // btn div
     const btnDiv = document.createElement("div");
@@ -127,7 +127,6 @@ function renderImages(container, images, basePath) {
 
     btnDiv.appendChild(btnCpy);
     btnDiv.appendChild(btnQr);
-
     switch (image.split(".")[1]) {
       case "pdf":
         parentDiv.appendChild(docDiv);
