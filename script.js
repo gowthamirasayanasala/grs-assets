@@ -1,47 +1,36 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Path to the folder containing images
-  const imagePath = "images/"; //"path/to/your/images/"
+  const basePath = `https://gowthamirasayanasala.github.io/grs-assets`;
   // Reference to the container element
 
   const container = document.getElementById("image-container");
+
   // Fetch images
 
-  fetch("https://gowthamirasayanasala.github.io/grs-assets/images/assets-names.json", {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
+  const data = fetch(`${basePath}/assets-names.json`)
     .then((response) => {
-      const movies = JSON.stringify(response.json());
-      console.log(movies,response.json(), "ee");
-      // renderImages(container, images);
+      // Check if the request was successful (status code 200)
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // Parse the JSON in the response
+      return response.json();
+    })
+    .then((data) => {
+      // Do something with the JSON data
+      console.log(data);
+      renderImages(
+        container,
+        data.map((n) => n.name),
+        basePath
+      );
     })
     .catch((error) => console.error("Error fetching images: ee", error));
-
-  fetchImages(imagePath)
-    .then((images) => {
-      console.log(images);
-      renderImages(container, images);
-    })
-    .catch((error) => console.error("Error fetching images:", error));
 });
 
-// Function to fetch images from a folder
-async function fetchImages(path) {
-  const response = await fetch(path);
-  console.log(response.body, typeof response);
-  const data = await response.text();
-  const parser = new DOMParser();
-  const htmlDocument = parser.parseFromString(data, "text/html");
-  // Extract image filenames based on your HTML structure
-  const images = Array.from(htmlDocument.querySelectorAll(".icon-jpg"))
-    .filter((img) => img.href) // Filter out elements without a source attribute
-    .map((img) => img.href);
-  return images;
-}
-
 // Function to render images to the HTML
-function renderImages(container, images) {
+function renderImages(container, images, basePath) {
   const fragment = document.createDocumentFragment();
   images.forEach((image, index) => {
     console.log(image);
@@ -54,12 +43,16 @@ function renderImages(container, images) {
     // image
     const imgElement = document.createElement("img");
     imgElement.classList.add("rounded-image");
-    imgElement.src = image;
+    imgElement.src = `${basePath}/images/${image}`;
     imgElement.id = `i-${index}`;
-
     imgElement.alt = image.toString().split("/")[
       image.toString().split("/").length - 1
     ];
+
+    // dock div
+    const docDiv = document.createElement("div");
+    docDiv.classList.add("docDiv");
+    docDiv.id = `p-${index}`;
 
     // btn div
     const btnDiv = document.createElement("div");
@@ -77,7 +70,7 @@ function renderImages(container, images) {
       // Use the modern Clipboard API
       navigator.clipboard
         .writeText(
-          `https://gowthamirasayanasala.github.io/grs-assets/images/${
+          `${basePath}/images/${
             image.toString().split("/")[image.toString().split("/").length - 1]
           }`
         )
@@ -99,7 +92,7 @@ function renderImages(container, images) {
     btnQr.addEventListener("click", function ($event) {
       // Create a QR code
       const qr = new QRious({
-        value: `https://gowthamirasayanasala.github.io/grs-assets/images/${
+        value: `${basePath}/images/${
           image.toString().split("/")[image.toString().split("/").length - 1]
         }`,
         size: 500,
@@ -133,7 +126,17 @@ function renderImages(container, images) {
 
     btnDiv.appendChild(btnCpy);
     btnDiv.appendChild(btnQr);
-    parentDiv.appendChild(imgElement);
+
+    switch (image.split(".")[1]) {
+      case "pdf":
+        parentDiv.appendChild(docDiv);
+        break;
+
+      default:
+        parentDiv.appendChild(imgElement);
+        break;
+    }
+
     parentDiv.appendChild(btnDiv);
 
     fragment.appendChild(parentDiv);

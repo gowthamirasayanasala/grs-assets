@@ -166,6 +166,10 @@ button {
   color: black;
 }
 
+.docDiv {
+  font-weight: 600;
+}
+
 .rounded-image {
   width: 150px;
   height: 150px;
