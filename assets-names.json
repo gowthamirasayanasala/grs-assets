@@ -1,44 +1,58 @@
 [
   {
-    "name": "1920-photo-of-tasting-different-herbs-ai-generated.jpg"
+    "name": "1920-photo-of-tasting-different-herbs-ai-generated.jpg",
+    "type": "images"
   },
   {
-    "name": "ayurveda-6600173_1280.png"
+    "name": "ayurveda-6600173_1280.png",
+    "type": "images"
   },
   {
-    "name": "ayurveda-8492240_1920.jpg"
+    "name": "ayurveda-8492240_1920.jpg",
+    "type": "images"
   },
   {
-    "name": "ayurveda-herbal-medicine.jpg"
+    "name": "ayurveda-herbal-medicine.jpg",
+    "type": "images"
   },
   {
-    "name": "bc_drop.jpg"
+    "name": "bc_drop.jpg",
+    "type": "images"
   },
   {
-    "name": "bg_category.jpg"
+    "name": "bg_category.jpg",
+    "type": "images"
   },
   {
-    "name": "grs_base.png"
+    "name": "grs_base.png",
+    "type": "images"
   },
   {
-    "name": "GRS_CATLOUGE_2025.pdf"
+    "name": "Leucodin 1.jpg",
+    "type": "images"
   },
   {
-    "name": "Leucodin 1.jpg"
+    "name": "Leucodin 2.jpg",
+    "type": "images"
   },
   {
-    "name": "Leucodin 2.jpg"
+    "name": "Leucodin 3.jpg",
+    "type": "images"
   },
   {
-    "name": "Leucodin 3.jpg"
+    "name": "man-9086419_1920.jpg",
+    "type": "images"
   },
   {
-    "name": "man-9086419_1920.jpg"
+    "name": "variety-spices-table.jpg",
+    "type": "images"
   },
   {
-    "name": "OneNote Table Of Contents.onetoc2"
+    "name": "GRS_CATLOUGE_2025.pdf",
+    "type": "docs"
   },
   {
-    "name": "variety-spices-table.jpg"
+    "name": "om_namo_venkateshaya.mp3",
+    "type": "audio"
   }
 ]

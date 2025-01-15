@@ -1,21 +1,12 @@
 const fs = require("fs");
 
+// Specify the paths to the folders
+const imagesFolderPath = "images";
+const docsFolderPath = "docs";
+const audioFolderPath = "audio";
+
 // Specify the path to the JSON file
 const jsonfilePath = "assets-names.json";
-
-// Specify the path to the folder
-const imagesFolderPath = "images";
-
-// Read the JSON file
-function readJsonFile() {
-  try {
-    const data = fs.readFileSync(jsonfilePath, "utf-8");
-    return JSON.parse(data);
-  } catch (error) {
-    console.error("Error reading JSON file:", error.message);
-    return null;
-  }
-}
 
 // Clear (delete) the contents of the JSON file
 function clearJsonFile() {
@@ -38,22 +29,43 @@ function writeJsonFile(data) {
   }
 }
 
-// Read the contents of the folder
-fs.readdir(imagesFolderPath, (err, files) => {
-  if (err) {
-    console.error("Error reading folder:", err);
-    return;
-  }
-  // Clear the file (optional)
-  clearJsonFile();
-  // Log the file names
-  console.log("Files in the folder:", files);
-
-  const fileNames = [];
-  files.forEach((element) => {
-    fileNames.push({ name: element });
+// Read the contents of a folder and return files with their types
+function readFolder(folderPath, type) {
+  return new Promise((resolve, reject) => {
+    fs.readdir(folderPath, (err, files) => {
+      if (err) {
+        console.error(`Error reading folder ${folderPath}:`, err.message);
+        reject(err);
+        return;
+      }
+      const fileNames = files.map((file) => ({
+        name: file,
+        type: type,
+      }));
+      resolve(fileNames);
+    });
   });
+}
 
-  // Write the modified/new data to the file
-  writeJsonFile(fileNames);
-});
+// Combine all assets into one JSON file
+async function generateAssetsJson() {
+  try {
+    clearJsonFile(); // Clear existing data
+
+    // Read files from all folders
+    const images = await readFolder(imagesFolderPath, "images");
+    const docs = await readFolder(docsFolderPath, "docs");
+    const audio = await readFolder(audioFolderPath, "audio");
+
+    // Combine all files into one array
+    const allAssets = [...images, ...docs, ...audio];
+
+    // Write combined data to the JSON file
+    writeJsonFile(allAssets);
+  } catch (error) {
+    console.error("Error generating assets JSON:", error.message);
+  }
+}
+
+// Generate the JSON file
+generateAssetsJson();

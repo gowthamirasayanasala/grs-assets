@@ -1,144 +1,139 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Path to the folder containing images
   const basePath = `https://gowthamirasayanasala.github.io/grs-assets`;
+  const container = document.getElementById("content-container");
 
-  const container = document.getElementById("image-container");
+  if (!container) {
+    console.error("Element with ID 'content-container' not found in the DOM.");
+    return;
+  }
 
-  // Fetch images
-
-  const data = fetch(`${basePath}/assets-names.json`)
+  fetch(`${basePath}/assets-names.json`)
     .then((response) => {
-      // Check if the request was successful (status code 200)
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
-      // Parse the JSON in the response
       return response.json();
     })
     .then((data) => {
-      // Do something with the JSON data
-      console.log(data);
-      renderImages(
-        container,
-        data.map((n) => n.name),
-        basePath
-      );
+      renderAssetsByType(container, data, basePath);
     })
-    .catch((error) => console.error("Error fetching images: ee", error));
+    .catch((error) => console.error("Error fetching assets:", error));
 });
 
-// Function to render images to the HTML
-function renderImages(container, images, basePath) {
-  const fragment = document.createDocumentFragment();
-  images.forEach((image, index) => {
-    console.log(image);
+// Function to render assets grouped by type
+function renderAssetsByType(container, assets, basePath) {
+  const sections = {
+    images: createSection(container, "Images"),
+    documents: createSection(container, "Documents"),
+    audio: createSection(container, "Audio Files"),
+  };
 
-    // parent div
+  Object.keys(sections).forEach((key) => {
+    const sectionWrapper = document.createElement("div");
+    sectionWrapper.classList.add("section-wrapper", `${key}-wrapper`);
+    sections[key].appendChild(sectionWrapper);
+    sections[key].wrapper = sectionWrapper; // Store the wrapper for adding items
+  });
+
+  assets.forEach((asset, index) => {
+    const fileType = asset.name.split(".").pop();
     const parentDiv = document.createElement("div");
     parentDiv.classList.add("parent-items-wrapper");
     parentDiv.id = `p-${index}`;
 
-    // image
-    const imgElement = document.createElement("img");
-    imgElement.classList.add("rounded-image");
-    imgElement.src = `${basePath}/images/${image}`;
-    imgElement.id = `i-${index}`;
-    imgElement.alt = image.toString().split("/")[
-      image.toString().split("/").length - 1
-    ];
-
-    // dock div
-    const docDiv = document.createElement("div");
-    docDiv.classList.add("docDiv");
-    docDiv.id = `dd-${index}`;
-    docDiv.innerText = image.split(".")[0]
-
-    // btn div
+    // Buttons container
     const btnDiv = document.createElement("div");
     btnDiv.classList.add("btn-wrapper");
-    btnDiv.id = `bd-${index}`;
 
-    // buttons
+    // Copy URL Button
     const btnCpy = document.createElement("button");
     btnCpy.classList.add("btn-copy");
     btnCpy.textContent = "Copy URL";
-    btnCpy.id = `bcyp-${index}`;
-    btnCpy.name = `bcyp-${index}-n`;
-
-    btnCpy.addEventListener("click", function ($event) {
-      // Use the modern Clipboard API
+    btnCpy.addEventListener("click", function () {
       navigator.clipboard
-        .writeText(
-          `${basePath}/images/${
-            image.toString().split("/")[image.toString().split("/").length - 1]
-          }`
-        )
-        .then(() => {
-          // Success
-        })
-        .catch((err) => {
-          // Handle errors
-          console.error("Unable to copy text to clipboard", err);
-        });
+        .writeText(`${basePath}/${asset.type}/${asset.name}`)
+        .then(() => alert("URL copied to clipboard!"))
+        .catch((err) => console.error("Error copying URL:", err));
     });
 
+    // QR Code Download Button
     const btnQr = document.createElement("button");
     btnQr.classList.add("btn-qr");
     btnQr.textContent = "QR Code";
-    btnQr.id = `bqr-${index}`;
-    btnQr.name = `bqr-${index}-n`;
-
-    btnQr.addEventListener("click", function ($event) {
-      // Create a QR code
+    btnQr.addEventListener("click", function () {
       const qr = new QRious({
-        value: `${basePath}/images/${
-          image.toString().split("/")[image.toString().split("/").length - 1]
-        }`,
-        size: 500,
+        value: `${basePath}/${asset.type}/${asset.name}`,
+        size: 250,
         level: "H",
       });
 
-      // Create a canvas element to draw the QR code
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      canvas.width = qr.size;
-      canvas.height = qr.size;
-      context.clearRect(0, 0, qr.size, qr.size);
-      context.drawImage(qr.canvas, 0, 0, qr.size, qr.size);
+      // Convert the QR code to a data URL
+      const dataUrl = qr.toDataURL();
 
-      // Convert the canvas to a data URL
-      const dataUrl = canvas.toDataURL("image/png");
-
-      // Create a link element
+      // Create a temporary link element
       const link = document.createElement("a");
       link.href = dataUrl;
-      link.download = `${
-        image
-          .toString()
-          .split("/")
-          [image.toString().split("/").length - 1].split(".")[0]
-      }.png`;
+      link.download = `${asset.name.split(".")[0]}_QRCode.png`;
 
-      // Trigger a click on the link to start the download
+      // Trigger the download
       link.click();
     });
 
     btnDiv.appendChild(btnCpy);
     btnDiv.appendChild(btnQr);
-    switch (image.split(".")[1]) {
-      case "pdf":
-        parentDiv.appendChild(docDiv);
-        break;
 
-      default:
+    switch (fileType) {
+      case "jpg":
+      case "jpeg":
+      case "png":
+      case "gif": {
+        const imgElement = document.createElement("img");
+        imgElement.classList.add("rounded-image");
+        imgElement.src = `${basePath}/images/${asset.name}`;
+        imgElement.alt = `Image: ${asset.name}`;
         parentDiv.appendChild(imgElement);
+        sections.images.wrapper.appendChild(parentDiv);
         break;
+      }
+      case "pdf":
+      case "docx":
+      case "txt": {
+        const docLink = document.createElement("a");
+        docLink.href = `${basePath}/docs/${asset.name}`;
+        docLink.textContent = `${asset.name}`.split('.')[0];
+        docLink.target = "_blank";
+        docLink.classList.add("doc-link");
+        parentDiv.appendChild(docLink);
+        sections.documents.wrapper.appendChild(parentDiv);
+        break;
+      }
+      case "mp3":
+      case "wav": {
+        const audioElement = document.createElement("audio");
+        audioElement.controls = true;
+        audioElement.src = `${basePath}/audio/${asset.name}`;
+        audioElement.classList.add("audio-player");
+        parentDiv.appendChild(audioElement);
+        sections.audio.wrapper.appendChild(parentDiv);
+        break;
+      }
+      default:
+        console.warn(`Unsupported file type: ${fileType}`);
     }
 
-    parentDiv.appendChild(btnDiv);
-
-    fragment.appendChild(parentDiv);
+    parentDiv.appendChild(btnDiv); // Append buttons to the parent div
   });
-  container.appendChild(fragment);
+}
+
+// Function to create and append a section with a title
+function createSection(container, title) {
+  const section = document.createElement("div");
+  section.classList.add("section");
+
+  const header = document.createElement("h2");
+  header.textContent = title;
+  section.appendChild(header);
+
+  container.appendChild(section);
+  return section;
 }
